@@ -1,6 +1,6 @@
 // 2値データの要因解析の Service Worker
 // 公開ファイルを更新したら VERSION を上げる。古いキャッシュは activate 時に削除される
-const VERSION = 'v1.0.1';
+const VERSION = 'v1.0.2';
 const APP_CACHE = `logit-calc-${VERSION}`;
 const FONT_CACHE = 'logit-calc-fonts';
 
