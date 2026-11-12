@@ -132,10 +132,10 @@
   function design(cols, spec) {
     const names = spec.names || cols.map((_, i) => `列${i + 1}`);
     const xs = spec.x || [];
-    if (spec.y == null) throw new Error('目的変数（2 種類の値を持つ結果の列）を選んでください');
-    if (!xs.length) throw new Error('説明変数を 1 つ以上選んでください');
+    if (spec.y == null) throw new Error('目的変数（2種類の値を持つ結果の列）を選んでください');
+    if (!xs.length) throw new Error('説明変数を1つ以上選んでください');
     const ylv = levelsOf(cols[spec.y]);
-    if (ylv.length !== 2) throw new Error(`目的変数「${names[spec.y]}」の値が ${ylv.length} 種類です（2 種類である必要があります）`);
+    if (ylv.length !== 2) throw new Error(`目的変数「${names[spec.y]}」の値が${ylv.length}種類です（2種類である必要があります）`);
     const event = spec.event != null && ylv.includes(key(spec.event)) ? key(spec.event) : guessEvent(ylv);
     const nonEvent = ylv.find(l => l !== event);
     const used = [spec.y, ...xs.map(t => t.col)];
@@ -153,7 +153,7 @@
       const lv = levelsOf(rows.map(i => cols[t.col][i])).sort(); // 水準は文字コード順（基準の既定は先頭）
       const ref = t.ref != null && lv.includes(key(t.ref)) ? key(t.ref) : lv[0];
       cat[t.col] = { levels: lv, ref, others: lv.filter(l => l !== ref) };
-      if (lv.length < 2) throw new Error(`説明変数「${names[t.col]}」の水準が 1 種類だけです`);
+      if (lv.length < 2) throw new Error(`説明変数「${names[t.col]}」の水準が1種類だけです`);
     }
     // 列（項）の定義：{ label, vars: [変数の列番号], f: 値の取り出し(vals) }
     const terms = [{ label: '切片', vars: [], kind: 'intercept', f: () => 1 }];
@@ -185,14 +185,14 @@
     const alpha = opt.alpha != null ? opt.alpha : 0.05;
     const z = normPpf(1 - alpha / 2);
     const events = sum(y);
-    if (n < p + 1) throw new Error(`使えるデータが ${n} 行です。推定する係数（${p} 個）より多い行が必要です`);
-    if (events === 0 || events === n) throw new Error(`「${D.event}」が ${events === 0 ? '1 件もありません' : 'すべての行です'}。両方の結果が必要です`);
+    if (n < p + 1) throw new Error(`使えるデータが${n}行です。推定する係数（${p}個）より多い行が必要です`);
+    if (events === 0 || events === n) throw new Error(`「${D.event}」が${events === 0 ? '1件もありません' : 'すべての行です'}。両方の結果が必要です`);
     // 数値の安定のため、切片以外の列を平均 0・標準偏差 1 にしてから当てはめ、元の尺度に戻す
     const m = new Array(p).fill(0), s = new Array(p).fill(1);
     for (let j = 1; j < p; j++) {
       const col = X.map(r => r[j]); m[j] = sum(col) / n;
       s[j] = Math.sqrt(sum(col.map(v => (v - m[j]) ** 2)) / (n - 1));
-      if (!(s[j] > 0)) throw new Error(`「${terms[j].label}」の値がすべて同じです（使える行で 1 種類だけ）`);
+      if (!(s[j] > 0)) throw new Error(`「${terms[j].label}」の値がすべて同じです（使える行で1種類だけ）`);
     }
     const Z = X.map(r => r.map((v, j) => (j === 0 ? 1 : (v - m[j]) / s[j])));
     const logDetT = -sum(s.slice(1).map(Math.log)); // log|det T|（Z = X T）
@@ -203,13 +203,13 @@
       const big = fit.beta.slice(1).some(v => Math.abs(v) > 12);
       const extreme = fit.pr.filter(v => v < 1e-9 || v > 1 - 1e-9).length;
       separation = !fit.converged || fit.singular || (big && extreme > 0);
-      if (separation && method === 'auto') { method = 'firth'; notes.push(['warn', 'データが完全（または準完全）に分離しているため、最尤法では係数が無限大に発散します。Firth 法（罰則つき最尤法）で計算しました']); }
-      else if (separation) notes.push(['err', 'データが分離しているため、最尤法の係数・標準誤差は信頼できません。Firth 法を選んでください']);
+      if (separation && method === 'auto') { method = 'firth'; notes.push(['warn', 'データが完全（または準完全）に分離しているため、最尤法では係数が無限大に発散します。Firth法（罰則つき最尤法）で計算しました']); }
+      else if (separation) notes.push(['err', 'データが分離しているため、最尤法の係数・標準誤差は信頼できません。Firth法を選んでください']);
       else method = 'ml';
     }
     if (method === 'firth') fit = fitCore(Z, y, true);
     const firth = method === 'firth';
-    if (!fit.converged) notes.push(['warn', `計算が収束しませんでした（${fit.iter} 回）。結果は参考値です`]);
+    if (!fit.converged) notes.push(['warn', `計算が収束しませんでした（${fit.iter}回）。結果は参考値です`]);
     if (!fit.L) throw new Error('情報行列が特異です。説明変数どうしが完全に相関していないか（同じ内容の列、区分の水準の組み合わせ）を確認してください');
     // 元の尺度へ：β = T b、Cov = T C Tᵀ
     const T = Array.from({ length: p }, (_, i) => new Float64Array(p));
@@ -265,11 +265,11 @@
     const roc = rocCurve(y, pr);
     const vif = vifOf(X);
     const epv = Math.min(events, n - events) / (p - 1);
-    if (D.dropped.length) notes.push(['info', `空欄または数値でないセルがある ${D.dropped.length} 行を除きました（${D.dropped.slice(0, 8).map(i => i + 1).join('、')}${D.dropped.length > 8 ? ' ほか' : ''} 行目）`]);
-    if (epv < 10) notes.push(['warn', `少ない方の結果（${Math.min(events, n - events)} 件）が、推定する係数 1 個あたり ${epv.toFixed(1)} 件です。10 件以上が目安で、少ないと係数が過大に出やすくなります${firth ? '' : '（Firth 法を使うと偏りを抑えられます）'}`]);
-    vif.forEach((v, k) => { const tm = terms[k + 1]; if (v > 10 && tm.kind === 'main') notes.push(['warn', `「${tm.label}」の VIF が ${v.toFixed(1)} です。ほかの説明変数と強く相関しているため、係数の解釈に注意してください`]); });
-    if (hl && hl.p < 0.05) notes.push(['warn', `Hosmer-Lemeshow 検定で当てはまりが悪い（p = ${hl.p.toFixed(3)}）。2乗項や交互作用、見落としている変数がないか確認してください`]);
-    if (firth) notes.push(['info', 'Firth 法の p 値は罰則つき尤度比検定、係数の信頼区間は Wald の区間です']);
+    if (D.dropped.length) notes.push(['info', `空欄または数値でないセルがある${D.dropped.length}行を除きました（${D.dropped.slice(0, 8).map(i => i + 1).join('、')}${D.dropped.length > 8 ? ' ほか' : ''}行目）`]);
+    if (epv < 10) notes.push(['warn', `少ない方の結果（${Math.min(events, n - events)}件）が、推定する係数1個あたり${epv.toFixed(1)}件です。10件以上が目安で、少ないと係数が過大に出やすくなります${firth ? '' : '（Firth法を使うと偏りを抑えられます）'}`]);
+    vif.forEach((v, k) => { const tm = terms[k + 1]; if (v > 10 && tm.kind === 'main') notes.push(['warn', `「${tm.label}」のVIFが${v.toFixed(1)}です。ほかの説明変数と強く相関しているため、係数の解釈に注意してください`]); });
+    if (hl && hl.p < 0.05) notes.push(['warn', `Hosmer-Lemeshow検定で当てはまりが悪い（p = ${hl.p.toFixed(3)}）。2乗項や交互作用、見落としている変数がないか確認してください`]);
+    if (firth) notes.push(['info', 'Firth法のp値は罰則つき尤度比検定、係数の信頼区間はWaldの区間です']);
     // 予測：vals は { 列番号: 値 }
     const rowFor = vals => terms.map(tm => tm.f(vals));
     function predict(vals) {

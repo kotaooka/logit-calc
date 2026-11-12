@@ -4,17 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ロジスティック回帰の計算ツール｜合否など2値データの要因解析</title>
-<meta name="description" content="合否・発生の有無のような 2 値の結果と、温度・時間・濃度などの測定値の関係をロジスティック回帰で解析し、起きる確率と条件の限界をブラウザだけで計算する">
+<meta name="description" content="合否・発生の有無のような2値の結果と、温度・時間・濃度などの測定値の関係をロジスティック回帰で解析し、起きる確率と条件の限界をブラウザだけで計算する">
 <link rel="canonical" href="https://kotaooka.github.io/logit-calc/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="QC Workbench">
 <meta property="og:title" content="ロジスティック回帰の計算ツール｜合否など2値データの要因解析">
-<meta property="og:description" content="合否・発生の有無のような 2 値の結果と、温度・時間・濃度などの測定値の関係をロジスティック回帰で解析し、起きる確率と条件の限界をブラウザだけで計算する">
+<meta property="og:description" content="合否・発生の有無のような2値の結果と、温度・時間・濃度などの測定値の関係をロジスティック回帰で解析し、起きる確率と条件の限界をブラウザだけで計算する">
 <meta property="og:url" content="https://kotaooka.github.io/logit-calc/">
 <meta property="og:image" content="https://kotaooka.github.io/logit-calc/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="2値データの要因解析：ロジスティック回帰、オッズ比、確率の等高線、条件の逆算">
+<meta property="og:image:alt" content="ロジスティック回帰：ロジスティック回帰、オッズ比、確率の等高線、条件の逆算">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#1d5c96" media="(prefers-color-scheme: light)">
@@ -22,7 +22,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-title" content="要因解析">
+<meta name="apple-mobile-web-app-title" content="ロジスティック回帰">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -59,7 +59,7 @@
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html, body { margin: 0; }
+html, body { text-autospace: normal; margin: 0; }
 body { background: var(--bg); color: var(--ink); font-family: var(--f-ui); font-size: 15px; line-height: 1.6; -webkit-text-size-adjust: 100%; }
 .num, .mono, input[type="number"], input.num { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
 .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 0 56px; }
@@ -279,8 +279,8 @@ h3.sec { font-size: .95rem; margin: 20px 0 6px; }
 <header class="top">
   <div class="top-in">
     <div class="brand">
-      <a class="home" href="https://kotaooka.github.io/" title="QC Workbench（ツール一覧）へ戻る">QC Workbench</a><span class="crumb" aria-hidden="true">›</span><h1>2値データの要因解析</h1>
-      <span class="std">ロジスティック回帰</span>
+      <a class="home" href="https://kotaooka.github.io/" title="QC Workbench（ツール一覧）へ戻る">QC Workbench</a><span class="crumb" aria-hidden="true">›</span><h1>ロジスティック回帰</h1>
+      <span class="std">2値データの要因解析</span>
       <button class="btn small theme" id="themeBtn" type="button" aria-label="表示テーマを切り替え">表示：自動</button>
     </div>
     <nav class="tabs" role="tablist">
@@ -291,22 +291,22 @@ h3.sec { font-size: .95rem; margin: 20px 0 6px; }
 </header>
 
 <main class="wrap">
-  <div class="print-head"><h1>2値データの要因解析</h1><div id="printDate"></div></div>
+  <div class="print-head"><h1>ロジスティック回帰</h1><div id="printDate"></div></div>
 
   <section data-panel="main">
     <div class="box" id="dataSec">
       <h2><span class="step">1</span>データ</h2>
-      <p class="hint">1 行が 1 件（1 回の試験・1 個の観測）です。結果の列（合格／不合格、あり／なし、1／0 など 2 種類の値）と、説明に使う数値の列を並べます。区分（種類・グループなど）の列も使えます。</p>
+      <p class="hint">1行が1件（1回の試験・1個の観測）です。結果の列（合格／不合格、あり／なし、1／0など2種類の値）と、説明に使う数値の列を並べます。区分（種類・グループなど）の列も使えます。</p>
       <div class="tools">
-        <span class="file-btn btn">Excel・CSV を読み込む<input type="file" id="fileIn" accept=".xlsx,.csv,.tsv,.txt"></span>
+        <span class="file-btn btn">Excel・CSVを読み込む<input type="file" id="fileIn" accept=".xlsx,.csv,.tsv,.txt"></span>
         <button class="btn" type="button" id="sampleBtn">サンプルデータで試す</button>
         <button class="btn" type="button" id="addCol">列を追加</button>
         <button class="btn danger" type="button" id="clearBtn">入力を消す</button>
         <span class="spacer"></span><span class="saved hint" id="saved"></span>
       </div>
-      <p class="hint paste-hint">Excel の表を見出しの行ごとコピーして、表の左上のセルに貼り付けると、列名ごと読み取ります。列名は表の 1 行目で変えられます。</p>
+      <p class="hint paste-hint">Excelの表を見出しの行ごとコピーして、表の左上のセルに貼り付けると、列名ごと読み取ります。列名は表の1行目で変えられます。</p>
       <div class="grid-wrap" id="grid"></div>
-      <p class="privacy">データはこの端末の中だけで計算し、外部に送信しません。入力は自動でこの端末に保存します。</p>
+      <p class="privacy">入力したデータは、この端末の外に送りません。入力は自動でこの端末に保存します。</p>
     </div>
 
     <div class="box" id="varSec">
@@ -318,10 +318,10 @@ h3.sec { font-size: .95rem; margin: 20px 0 6px; }
       <div id="interBox"></div>
       <div class="inline-opts">
         <span class="lbl">推定方法</span>
-        <div class="seg" id="methodSeg"><button type="button" data-v="auto">自動</button><button type="button" data-v="ml">最尤法</button><button type="button" data-v="firth">Firth 法</button></div>
+        <div class="seg" id="methodSeg"><button type="button" data-v="auto">自動</button><button type="button" data-v="ml">最尤法</button><button type="button" data-v="firth">Firth法</button></div>
         <label class="field"><span class="lbl">有意水準</span><input type="number" id="alphaIn" step="0.01" min="0.001" max="0.5"></label>
       </div>
-      <p class="hint">自動：データが分離している（ある値を境に結果が完全に分かれる）ときだけ Firth 法を使います。</p>
+      <p class="hint">自動：データが分離している（ある値を境に結果が完全に分かれる）ときだけFirth法を使います。</p>
     </div>
 
     <div class="box" id="out"></div>
@@ -330,29 +330,29 @@ h3.sec { font-size: .95rem; margin: 20px 0 6px; }
   <section data-panel="explain" hidden>
     <div class="box explain">
 <!--EXPLAIN-START-->
-<h1>2値データの要因解析の解説</h1>
-<p>「合格・不合格」「発生した・しなかった」「成功・失敗」のように結果が 2 通りのデータと、温度・時間・濃度などの測定値との関係を、<strong>ロジスティック回帰</strong>で調べます。</p>
+<h1>ロジスティック回帰の解説</h1>
+<p>「合格・不合格」「発生した・しなかった」「成功・失敗」のように結果が2通りのデータと、温度・時間・濃度などの測定値との関係を、<strong>ロジスティック回帰</strong>で調べます。</p>
 <h2>どんなときに使うか</h2>
 <ul>
 <li>結果に効いている変数はどれか、どのくらい効いているかを調べる</li>
-<li>「不合格の確率を 1% 以下にするには、温度を何度以下にすればよいか」のように、確率が目標になる条件を求める</li>
-<li>2 つの変数の組み合わせで、起きやすい領域を図にする</li>
+<li>「不合格の確率を1%以下にするには、温度を何度以下にすればよいか」のように、確率が目標になる条件を求める</li>
+<li>2つの変数の組み合わせで、起きやすい領域を図にする</li>
 </ul>
-<p>結果が数値で取れるなら、普通の回帰分析の方が少ないデータで多くのことが分かります。合否しか記録がないとき、または結果が本質的に 2 値のときに使います。</p>
+<p>結果が数値で取れるなら、普通の回帰分析の方が少ないデータで多くのことが分かります。合否しか記録がないとき、または結果が本質的に2値のときに使います。</p>
 <h2>モデル</h2>
-<p>「起きた方の結果」（設定で選んだ側）の確率を p として、そのロジット（対数オッズ）が説明変数の一次式になると考えます。</p>
+<p>「起きた方の結果」（設定で選んだ側）の確率をpとして、そのロジット（対数オッズ）が説明変数の一次式になると考えます。</p>
 <pre><code>log( p / (1 − p) ) = b0 + b1·x1 + b2·x2 + …
 p = 1 / (1 + exp(−(b0 + b1·x1 + b2·x2 + …)))
 </code></pre>
 <ul>
-<li><strong>オッズ</strong> p / (1 − p)：起きる確率と起きない確率の比。p = 20% ならオッズは 0.25</li>
-<li><strong>オッズ比</strong> exp(b)：x が 1 増えたとき、オッズが何倍になるか。1 より大きければ起きやすくなる</li>
-<li>確率は S 字の曲線で変わるので、同じ 1 増えでも、確率が 50% 付近と 1% 付近では確率の増え方が違います。オッズ比は一定です</li>
+<li><strong>オッズ</strong> p / (1 − p)：起きる確率と起きない確率の比。p = 20%ならオッズは0.25</li>
+<li><strong>オッズ比</strong> exp(b)：xが1増えたとき、オッズが何倍になるか。1より大きければ起きやすくなる</li>
+<li>確率はS字の曲線で変わるので、同じ1増えでも、確率が50%付近と1%付近では確率の増え方が違います。オッズ比は一定です</li>
 </ul>
-<h3>1σ あたりのオッズ比</h3>
-<p>「温度 1 ℃」と「時間 1 分」では 1 単位の重みがまったく違うので、各変数のデータの標準偏差（1σ）だけ増えたときのオッズ比を並べて比べます。影響の大きさの比較には、尤度比 χ²（大きいほど結果をよく説明する）も使えます。</p>
+<h3>1σあたりのオッズ比</h3>
+<p>「温度1 ℃」と「時間1分」では1単位の重みがまったく違うので、各変数のデータの標準偏差（1σ）だけ増えたときのオッズ比を並べて比べます。影響の大きさの比較には、尤度比χ²（大きいほど結果をよく説明する）も使えます。</p>
 <h3>区分の変数</h3>
-<p>材料の種類・グループ・担当者などは、基準の水準に対するオッズ比で表します（基準は「変数の設定」で選べます）。水準が k 種類なら係数は k − 1 個です。</p>
+<p>材料の種類・グループ・担当者などは、基準の水準に対するオッズ比で表します（基準は「変数の設定」で選べます）。水準がk種類なら係数はk − 1個です。</p>
 <h3>2乗項・交互作用</h3>
 <ul>
 <li><strong>2乗項</strong>：温度が低すぎても高すぎても失敗する、のように確率が途中で最小（最大）になる関係を表します</li>
@@ -362,27 +362,27 @@ p = 1 / (1 + exp(−(b0 + b1·x1 + b2·x2 + …)))
 <h2>推定と検定</h2>
 <ul>
 <li><strong>最尤法</strong>：観測された結果が最も起こりやすくなる係数を、ニュートン法で求めます</li>
-<li><strong>変数ごとの p 値</strong>：その変数（2乗項・交互作用・ダミー変数を含めて）を除いたモデルとの<strong>尤度比検定</strong>です。係数表の p 値（Wald 検定）より正確です</li>
-<li><strong>モデル全体の p 値</strong>：説明変数をすべて除いたモデルとの尤度比検定</li>
+<li><strong>変数ごとのp値</strong>：その変数（2乗項・交互作用・ダミー変数を含めて）を除いたモデルとの<strong>尤度比検定</strong>です。係数表のp値（Wald検定）より正確です</li>
+<li><strong>モデル全体のp値</strong>：説明変数をすべて除いたモデルとの尤度比検定</li>
 </ul>
-<h3>分離と Firth 法</h3>
-<p>「温度が 40 ℃ を超えたものはすべて不合格、それ以下はすべて合格」のように、ある値を境に結果が完全に分かれることを<strong>分離</strong>といいます。分離していると、最尤法の係数は無限大に発散し、標準誤差も p 値も意味を持ちません。少ないデータの試験ではよく起こります。</p>
-<p><strong>Firth 法</strong>は、対数尤度に 0.5 × log|情報行列| を足した罰則つき尤度を最大にする方法で、分離していても有限の係数を返し、少数データでの係数の過大な推定（偏り）も抑えます。「自動」では分離を検出したときだけ Firth 法に切り替えます。Firth 法の p 値は罰則つき尤度比検定（Heinze &amp; Schemper, 2002）です。</p>
+<h3>分離とFirth法</h3>
+<p>「温度が40 ℃ を超えたものはすべて不合格、それ以下はすべて合格」のように、ある値を境に結果が完全に分かれることを<strong>分離</strong>といいます。分離していると、最尤法の係数は無限大に発散し、標準誤差もp値も意味を持ちません。少ないデータの試験ではよく起こります。</p>
+<p><strong>Firth法</strong>は、対数尤度に0.5 × log|情報行列| を足した罰則つき尤度を最大にする方法で、分離していても有限の係数を返し、少数データでの係数の過大な推定（偏り）も抑えます。「自動」では分離を検出したときだけFirth法に切り替えます。Firth法のp値は罰則つき尤度比検定（Heinze &amp; Schemper, 2002）です。</p>
 <h3>必要なデータの量</h3>
-<p>少ない方の結果の件数が、推定する係数 1 個あたり 10 件以上あるのが目安です。少ない方が 15 件なら、説明変数は 1〜2 個が限度です。少ないと係数が過大に出やすく、予測確率も極端になります。</p>
+<p>少ない方の結果の件数が、推定する係数1個あたり10件以上あるのが目安です。少ない方が15件なら、説明変数は1〜2個が限度です。少ないと係数が過大に出やすく、予測確率も極端になります。</p>
 <h2>当てはまりの確認</h2>
 <ul>
-<li><strong>AUC</strong>：起きたものを、起きなかったものよりも高い確率で予測できている組の割合。0.5 は当て推量、0.7 以上でまずまず、0.8 以上で判別力が高い</li>
-<li><strong>Hosmer-Lemeshow 検定</strong>：予測確率の小さい順に約 10 組に分け、組ごとの予測件数と実際の件数を比べます。p が小さい（0.05 未満）と、モデルの形（2乗項・交互作用・変数の不足）を見直す余地があります</li>
-<li><strong>McFadden R²</strong>：1 − 対数尤度 ÷ 帰無モデルの対数尤度。普通の回帰の R² より小さく出るのが普通で、0.2〜0.4 でもよく当てはまっています</li>
-<li><strong>VIF</strong>：説明変数どうしの相関の強さ。10 を超えると係数が不安定で、どちらが効いているか区別できません</li>
+<li><strong>AUC</strong>：起きたものを、起きなかったものよりも高い確率で予測できている組の割合。0.5は当て推量、0.7以上でまずまず、0.8以上で判別力が高い</li>
+<li><strong>Hosmer-Lemeshow検定</strong>：予測確率の小さい順に約10組に分け、組ごとの予測件数と実際の件数を比べます。pが小さい（0.05未満）と、モデルの形（2乗項・交互作用・変数の不足）を見直す余地があります</li>
+<li><strong>McFadden R²</strong>：1 − 対数尤度 ÷ 帰無モデルの対数尤度。普通の回帰のR² より小さく出るのが普通で、0.2〜0.4でもよく当てはまっています</li>
+<li><strong>VIF</strong>：説明変数どうしの相関の強さ。10を超えると係数が不安定で、どちらが効いているか区別できません</li>
 <li><strong>効果の曲線のオレンジの点</strong>：データを件数の等しい区間に分けた実際の割合。曲線から大きく外れていれば、形が合っていない可能性があります</li>
 </ul>
 <h2>予測と逆算</h2>
 <p>条件を入れると、確率とその信頼区間を計算します。「目標の確率」を入れると、各数値変数について、ほかの条件を固定したときに確率が目標になる値を求めます。不良のように<strong>目標以下にしたい</strong>ときと、成功のように<strong>目標以上にしたい</strong>ときを選べます。</p>
 <ul>
 <li><strong>推定</strong>：予測確率がちょうど目標になる値</li>
-<li><strong>確実な側</strong>：目標以下にしたいときは予測確率の信頼区間の<strong>上限</strong>が、目標以上にしたいときは<strong>下限</strong>が目標になる値。「この値なら、確率は目標を満たすと（信頼度 95% で）言える」範囲です。管理値を決めるときはこちらを使います</li>
+<li><strong>確実な側</strong>：目標以下にしたいときは予測確率の信頼区間の<strong>上限</strong>が、目標以上にしたいときは<strong>下限</strong>が目標になる値。「この値なら、確率は目標を満たすと（信頼度95%で）言える」範囲です。管理値を決めるときはこちらを使います</li>
 </ul>
 <p>データの範囲の外の値は外挿なので、計算はできても裏付けがありません。</p>
 <h2>使うときの注意</h2>

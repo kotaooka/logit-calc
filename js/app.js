@@ -137,7 +137,7 @@
       const head = block[0].map(v => v.trim());
       const isHead = r0 === 0 && c0 === 0 && block.length > 1 && head.some(v => v !== '' && num(v) == null) && block.slice(1).some(row => row.some(v => num(v) != null));
       if (!isHead) return false;
-      try { loadRows(block); toast(`${block.length - 1} 行 × ${head.length} 列を読み取りました`); } catch (e) { toast('読み取れませんでした：' + e.message); }
+      try { loadRows(block); toast(`${block.length - 1}行 × ${head.length}列を読み取りました`); } catch (e) { toast('読み取れませんでした：' + e.message); }
       return true;
     },
     onChange: () => changed(),
@@ -149,7 +149,7 @@
   $('#grid').addEventListener('click', e => {
     const b = e.target.closest('[data-del]'); if (!b) return;
     const i = +b.dataset.del;
-    if (st.cols.length <= 2) { toast('列は 2 列以上必要です'); return; }
+    if (st.cols.length <= 2) { toast('列は2列以上必要です'); return; }
     if (st.cols[i].vals.some(v => String(v).trim() !== '') && !confirm(`列「${st.cols[i].name}」を削除しますか？`)) return;
     st.cols.splice(i, 1);
     st.inter = st.inter.filter(([a, b2]) => a !== i && b2 !== i).map(([a, b2]) => [a > i ? a - 1 : a, b2 > i ? b2 - 1 : b2]);
@@ -178,7 +178,7 @@
       const sh = wb.sheets.find(s => s.cells.length);
       if (!sh) throw new Error('データのあるシートがありません');
       loadRows(sh.cells);
-      toast(`${f.name} を読み込みました`);
+      toast(`${f.name}を読み込みました`);
     } catch (err) { toast('読み込めませんでした：' + err.message); console.error(err); }
     e.target.value = '';
   });
@@ -194,9 +194,9 @@
       const role = roleOf(i), type = typeOf(c), g = guess(c);
       const vals = c.vals.slice(0, st.nRows).filter(v => String(v).trim() !== '');
       const lv = Lg.levelsOf(vals);
-      let sum = `${vals.length} 件`;
+      let sum = `${vals.length}件`;
       if (g === 'num') { const xs = vals.map(num); sum += `、${sig(Math.min(...xs))} 〜 ${sig(Math.max(...xs))}`; }
-      else if (lv.length) sum += `、${lv.length} 種類（${lv.slice(0, 5).map(esc).join('・')}${lv.length > 5 ? '…' : ''}）`;
+      else if (lv.length) sum += `、${lv.length}種類（${lv.slice(0, 5).map(esc).join('・')}${lv.length > 5 ? '…' : ''}）`;
       const refSel = role === 'x' && type === 'cat' && lv.length ? `<select data-k="ref" data-i="${i}">${lv.map(l => `<option value="${esc(l)}"${(c.ref || lv[0]) === l ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>` : '';
       return `<tr><td class="l"><b>${esc(c.name)}</b></td>
         <td class="l"><select data-k="role" data-i="${i}"><option value="y"${role === 'y' ? ' selected' : ''}>結果（目的変数）</option><option value="x"${role === 'x' ? ' selected' : ''}>説明変数</option><option value="none"${role === 'none' ? ' selected' : ''}>使わない</option></select></td>
@@ -288,28 +288,28 @@
     const sigAll = R.pAll < R.alpha;
     let h = head;
     h += `<div class="banner ${sigAll ? 'sig' : ''}"><span class="big">${sigAll ? `「${esc(ev)}」と関連のある変数がある` : `「${esc(ev)}」と有意な関連は見られない`}</span>`
-      + `<span class="sub">モデル全体の尤度比検定 p ${pval(R.pAll)} ／ 最も効いている変数：${esc(top.name)}（p ${pval(top.p)}）／ AUC ${fix(R.auc, 3)} ／ ${R.n} 件中「${esc(ev)}」${R.events} 件 ／ ${R.firth ? 'Firth 法' : '最尤法'}</span></div>`;
+      + `<span class="sub">モデル全体の尤度比検定p ${pval(R.pAll)} ／ 最も効いている変数：${esc(top.name)}（p ${pval(top.p)}）／ AUC ${fix(R.auc, 3)} ／ ${R.n}件中「${esc(ev)}」${R.events}件 ／ ${R.firth ? 'Firth法' : '最尤法'}</span></div>`;
     // 変数ごとの効き方
-    h += `<h3 class="sec">変数ごとの効き方（影響の大きい順）</h3>` + tbl(['変数', '種類', '自由度', '尤度比 χ²', 'p 値', '1σ 増えたときのオッズ比', `${conf}% 信頼区間`, '向き'],
+    h += `<h3 class="sec">変数ごとの効き方（影響の大きい順）</h3>` + tbl(['変数', '種類', '自由度', '尤度比χ²', 'p値', '1σ増えたときのオッズ比', `${conf}%信頼区間`, '向き'],
       ranked.map(v => [esc(v.name), v.type === 'num' ? '数値' : '区分', String(v.df), fix(v.lr, 2), { v: pval(v.p), cls: v.p < R.alpha ? 'sig' : '' },
         v.orPerSD != null ? orFmt(v.orPerSD) : '―', v.orPerSDCI ? `${orFmt(v.orPerSDCI[0])} 〜 ${orFmt(v.orPerSDCI[1])}` : '―',
         v.direction == null ? (v.type === 'cat' ? '水準ごとに下の表' : '2乗項・交互作用あり（図を参照）') : { v: v.direction > 0 ? `増えると「${esc(ev)}」が増える` : `増えると「${esc(ev)}」が減る`, cls: v.p < R.alpha ? (v.direction > 0 ? 'up' : 'down') : '' }]))
-      + `<p class="hint">オッズ比は「${esc(ev)}」のオッズ（起きる確率 ÷ 起きない確率）が何倍になるか。1σ はその変数のデータの標準偏差で、単位の違う変数どうしを比べるための尺度です。</p>`;
+      + `<p class="hint">オッズ比は「${esc(ev)}」のオッズ（起きる確率 ÷ 起きない確率）が何倍になるか。1σはその変数のデータの標準偏差で、単位の違う変数どうしを比べるための尺度です。</p>`;
     // 係数
-    h += `<h3 class="sec">係数</h3>` + tbl(['項', '係数', '標準誤差', 'z', 'p 値', 'オッズ比（1 単位あたり）', `${conf}% 信頼区間`],
+    h += `<h3 class="sec">係数</h3>` + tbl(['項', '係数', '標準誤差', 'z', 'p値', 'オッズ比（1単位あたり）', `${conf}%信頼区間`],
       R.coef.map(c => [esc(c.label), sig(c.beta, 5), sig(c.se, 4), fix(c.z, 3), { v: pval(c.p), cls: c.kind !== 'intercept' && c.p < R.alpha ? 'sig' : '' },
         c.kind === 'intercept' ? '' : orFmt(c.or), c.kind === 'intercept' ? '' : `${orFmt(c.orCI[0])} 〜 ${orFmt(c.orCI[1])}`]));
     const catVars = R.vars.filter(v => v.type === 'cat');
     for (const v of catVars) h += `<p class="hint">${esc(v.name)}：基準の水準は「${esc(v.ref)}」。${v.counts.map(c => `${esc(c.level)} ${c.events}/${c.n}`).join('、')}（「${esc(ev)}」の件数／件数）</p>`;
     // 当てはまり
     h += `<h3 class="sec">当てはまり</h3>` + kv([
-      ['使ったデータ', `${R.n} 件`, R.dropped.length ? `除いた行 ${R.dropped.length}` : ''], [`「${ev}」`, `${R.events} 件`, `${pct(R.events / R.n)}`],
-      ['係数 1 個あたりの件数', fix(R.epv, 1), '10 以上が目安'], ['推定方法', R.firth ? 'Firth 法' : '最尤法', `${R.iter} 回で${R.converged ? '収束' : '未収束'}`],
-      ['尤度比 χ²（全体）', fix(R.lrAll, 2), `自由度 ${R.dfAll}、p ${pval(R.pAll)}`], ['McFadden R²', fix(R.mcfadden, 3)], ['逸脱度', sig(R.deviance, 5), `帰無モデル ${sig(R.nullDeviance, 5)}`],
+      ['使ったデータ', `${R.n}件`, R.dropped.length ? `除いた行${R.dropped.length}` : ''], [`「${ev}」`, `${R.events}件`, `${pct(R.events / R.n)}`],
+      ['係数1個あたりの件数', fix(R.epv, 1), '10以上が目安'], ['推定方法', R.firth ? 'Firth法' : '最尤法', `${R.iter}回で${R.converged ? '収束' : '未収束'}`],
+      ['尤度比χ²（全体）', fix(R.lrAll, 2), `自由度${R.dfAll}、p ${pval(R.pAll)}`], ['McFadden R²', fix(R.mcfadden, 3)], ['逸脱度', sig(R.deviance, 5), `帰無モデル${sig(R.nullDeviance, 5)}`],
       ['AIC', sig(R.aic, 5)], ['AUC', fix(R.auc, 3), R.auc >= 0.8 ? '判別力は高い' : R.auc >= 0.7 ? '判別力は中程度' : '判別力は低い'],
-      ['Hosmer-Lemeshow', R.hl ? `p ${pval(R.hl.p)}` : '―', R.hl ? `χ² ${fix(R.hl.stat, 2)}、${R.hl.g} 組` : 'データが少ない'],
+      ['Hosmer-Lemeshow', R.hl ? `p ${pval(R.hl.p)}` : '―', R.hl ? `χ² ${fix(R.hl.stat, 2)}、${R.hl.g}組` : 'データが少ない'],
     ]);
-    if (R.vif.length > 1) h += `<p class="hint">VIF（説明変数どうしの相関の強さ。10 を超えると係数が不安定）：${R.coef.slice(1).map((c, k) => `${esc(c.label)} ${fix(R.vif[k], 2)}`).join('、')}。2乗項・交互作用の列は元の変数と相関するので VIF が大きくなるのが普通です。</p>`;
+    if (R.vif.length > 1) h += `<p class="hint">VIF（説明変数どうしの相関の強さ。10を超えると係数が不安定）：${R.coef.slice(1).map((c, k) => `${esc(c.label)} ${fix(R.vif[k], 2)}`).join('、')}。2乗項・交互作用の列は元の変数と相関するのでVIFが大きくなるのが普通です。</p>`;
     h += notes(R.notes);
     // 予測と逆算
     h += `<h3 class="sec">予測と逆算</h3><p class="hint">条件を入れると「${esc(ev)}」の確率を計算します。グラフもこの条件（動かす変数以外）で描きます。</p><div class="pred" id="predIn">`
@@ -329,7 +329,7 @@
       h += `<div class="map-opts no-print"><span class="lbl">確率の地図</span>横軸 <select id="mapA">${opt(a)}</select> 縦軸 <select id="mapB">${opt(b)}</select></div>`;
     }
     h += `<div class="charts">${numVars.length >= 2 ? chartHtml('cMap', '確率の地図', true) + '<p class="hint wide-note" id="mapNote"></p>' : ''}${numVars.map(v => chartHtml(`cEff${v.col}`, `効果_${v.name}`)).join('')}${catVars.map(v => chartHtml(`cCat${v.col}`, `水準_${v.name}`)).join('')}${chartHtml('cForest', 'オッズ比')}${chartHtml('cRoc', 'ROC')}</div>`;
-    h += `<div class="tools no-print"><button class="btn" type="button" id="printBtn">印刷・PDF</button><button class="btn" type="button" id="xlsxBtn">結果を Excel で保存</button></div>`;
+    h += `<div class="tools no-print"><button class="btn" type="button" id="printBtn">印刷・PDF</button><button class="btn" type="button" id="xlsxBtn">結果をExcelで保存</button></div>`;
     out.innerHTML = h;
     // 入力欄
     $$('#predIn [data-pred]').forEach(el => el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', () => { st.pred[el.dataset.pred] = el.value; save(); predUpdate(); }));
@@ -364,12 +364,12 @@
     if (!R) return;
     const vals = predVals(), r = R.predict(vals), ev = esc(R.event), conf = Math.round((1 - R.alpha) * 1000) / 10;
     const target = Math.min(0.99999, Math.max(0.00001, (num(st.target) ?? 1) / 100));
-    let h = `<div class="card"><h4>この条件で「${ev}」の確率</h4><div class="big">${pct(r.p, 2)}</div><div class="hint">${conf}% 信頼区間 ${pct(r.lo, 2)} 〜 ${pct(r.hi, 2)}</div></div>`;
+    let h = `<div class="card"><h4>この条件で「${ev}」の確率</h4><div class="big">${pct(r.p, 2)}</div><div class="hint">${conf}%信頼区間${pct(r.lo, 2)} 〜 ${pct(r.hi, 2)}</div></div>`;
     for (const v of R.vars.filter(q => q.type === 'num')) {
       const iv = R.inverse(v.col, target, vals);
       const inRange = x => x >= v.min - (v.max - v.min) * 0.05 && x <= v.max + (v.max - v.min) * 0.05;
       let body;
-      if (!iv.est.length) body = `この条件では、${esc(v.name)} をデータの範囲の外まで動かしても確率が ${pct(target, 2)} になりません。`;
+      if (!iv.est.length) body = `この条件では、${esc(v.name)}をデータの範囲の外まで動かしても確率が${pct(target, 2)}になりません。`;
       else {
         // 目標の側（以下にしたいなら確率が下がる向き、以上にしたいなら上がる向き）を求める
         const above = st.goal === 'above';
@@ -381,11 +381,11 @@
           // 確実な側：信頼帯の上限（以上にしたいときは下限）が目標になる値のうち、x0 から目標の側にある最も近い値
           const cand = band.filter(u => (side === '以上' ? u >= x0 - 1e-12 : u <= x0 + 1e-12));
           const u = cand.length ? (side === '以上' ? Math.min(...cand) : Math.max(...cand)) : null;
-          return `<b>${sig(x0, 4)}</b> ${side}で ${pct(target, 2)} ${above ? '超' : '未満'}（推定）${u != null ? `、信頼帯の${bandName}で見ると <b>${sig(u, 4)}</b> ${side}（確実な側）` : `、信頼帯の${bandName}では範囲内に境目なし`}${inRange(x0) ? '' : '　※データの範囲外（外挿）'}`;
+          return `<b>${sig(x0, 4)}</b> ${side}で${pct(target, 2)} ${above ? '超' : '未満'}（推定）${u != null ? `、信頼帯の${bandName}で見ると <b>${sig(u, 4)}</b> ${side}（確実な側）` : `、信頼帯の${bandName}では範囲内に境目なし`}${inRange(x0) ? '' : '　※データの範囲外（外挿）'}`;
         });
         body = lines.join('<br>');
       }
-      h += `<div class="card"><h4>「${ev}」が ${pct(target, 2)} になる ${esc(v.name)}</h4><div class="lim">${body}</div><div class="hint">ほかの条件：${esc(condText(vals, v.col)) || 'なし'}。データの範囲 ${sig(v.min)} 〜 ${sig(v.max)}</div></div>`;
+      h += `<div class="card"><h4>「${ev}」が${pct(target, 2)}になる${esc(v.name)}</h4><div class="lim">${body}</div><div class="hint">ほかの条件：${esc(condText(vals, v.col)) || 'なし'}。データの範囲${sig(v.min)} 〜 ${sig(v.max)}</div></div>`;
     }
     $('#predOut').innerHTML = h;
     redrawCharts();
@@ -394,9 +394,9 @@
     if (!R) return;
     const c = Lg.confusion(R.y, R.pr, st.threshold), ev = esc(R.event), ne = esc(R.nonEvent);
     $('#confOut').innerHTML = tbl(['', `予測：${ev}`, `予測：${ne}`, '正しく判別'], [
-      [`実際：${ev}`, String(c.tp), String(c.fn), `感度 ${pct(c.sens)}`],
-      [`実際：${ne}`, String(c.fp), String(c.tn), `特異度 ${pct(c.spec)}`],
-    ]) + `<p class="hint">予測確率が ${pct(st.threshold)} 以上なら「${ev}」と予測。正解率 ${pct(c.acc)}。</p>`;
+      [`実際：${ev}`, String(c.tp), String(c.fn), `感度${pct(c.sens)}`],
+      [`実際：${ne}`, String(c.fp), String(c.tn), `特異度${pct(c.spec)}`],
+    ]) + `<p class="hint">予測確率が${pct(st.threshold)}以上なら「${ev}」と予測。正解率${pct(c.acc)}。</p>`;
   }
 
   // ---------- グラフ ----------
@@ -473,7 +473,7 @@
     const gy0 = Tp + 6, gh = H - Tp - B - 12;
     for (let k = 0; k < 20; k++) s.push(`<rect x="${W - Rm + 18}" y="${gy0 + gh * (1 - (k + 1) / 20)}" width="12" height="${gh / 20 + 0.5}" fill="${mix(0.6 * (k + 0.5) / 20)}"/>`);
     [0, 0.5, 1].forEach(t => s.push(`<text x="${W - Rm + 34}" y="${gy0 + gh * (1 - t) + 4}" font-size="10" fill="var(--muted)" font-family="var(--f-num)">${Math.round(t * 100)}%</text>`));
-    legend(s, [[R.event, (x, y) => markEvent(x, y - 4)], [R.nonEvent, (x, y) => markNon(x, y - 4)], [`目標 ${pct(target, 2)}`, (x, y) => `<line x1="${x - 8}" x2="${x + 6}" y1="${y - 4}" y2="${y - 4}" stroke="var(--ink)" stroke-width="2.2"/>`]], 1);
+    legend(s, [[R.event, (x, y) => markEvent(x, y - 4)], [R.nonEvent, (x, y) => markNon(x, y - 4)], [`目標${pct(target, 2)}`, (x, y) => `<line x1="${x - 8}" x2="${x + 6}" y1="${y - 4}" y2="${y - 4}" stroke="var(--ink)" stroke-width="2.2"/>`]], 1);
     const others = condText(vals, [a, b]);
     const note = $('#mapNote'); if (note) note.textContent = others ? `ほかの条件は「予測と逆算」の値に固定：${others}` : '';
     return C.resolveVars(s.join('') + '</svg>');
@@ -482,7 +482,7 @@
   function effectChart(v) {
     const vals = predVals(), ev = R.event;
     const pad = (v.max - v.min) * 0.04 || 1, x0 = v.min - pad, x1 = v.max + pad;
-    const s = svgOpen(`${v.name} と「${ev}」の確率`);
+    const s = svgOpen(`${v.name}と「${ev}」の確率`);
     const L = 58, Rm = 16, Tp = 34, B = 46;
     const ax = axes(s, x0, x1, 0, 1, L, Rm, Tp, B, v.name, `「${ev}」の確率`, t => Math.round(t * 100) + '%');
     const N = 120, curve = [], lo = [], hi = [];
@@ -491,7 +491,7 @@
     s.push(`<path d="${d(hi)}L${[...lo].reverse().map(q => `${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join('L')}Z" fill="var(--s1)" fill-opacity=".14"/>`);
     s.push(`<path d="${d(curve)}" fill="none" stroke="var(--s1)" stroke-width="2.2"/>`);
     const target = Math.min(0.99999, Math.max(0.00001, (num(st.target) ?? 1) / 100));
-    s.push(`<line x1="${L}" x2="${W - Rm}" y1="${ax.Y(target)}" y2="${ax.Y(target)}" stroke="var(--ink)" stroke-dasharray="5 4"/><text x="${W - Rm - 4}" y="${ax.Y(target) - 4}" font-size="11" text-anchor="end" fill="var(--ink)" paint-order="stroke" stroke="var(--surface)" stroke-width="3">目標 ${pct(target, 2)}</text>`);
+    s.push(`<line x1="${L}" x2="${W - Rm}" y1="${ax.Y(target)}" y2="${ax.Y(target)}" stroke="var(--ink)" stroke-dasharray="5 4"/><text x="${W - Rm - 4}" y="${ax.Y(target) - 4}" font-size="11" text-anchor="end" fill="var(--ink)" paint-order="stroke" stroke="var(--surface)" stroke-width="3">目標${pct(target, 2)}</text>`);
     // 実データ（0% と 100% の位置に少しずらして）
     const xs = R.rows.map(i => R.design.valsOf(i)[v.col]);
     xs.forEach((x, k) => { const jit = ((k * 7919) % 13 - 6) * 0.9; s.push(R.y[k] ? markEvent(ax.X(x), ax.Y(1) + 8 + jit * 0.5, 3) : markNon(ax.X(x), ax.Y(0) - 8 - jit * 0.5, 2.6)); });
@@ -511,7 +511,7 @@
   // 区分の水準ごとの予測確率
   function catChart(v) {
     const vals = predVals(), ev = R.event;
-    const s = svgOpen(`${v.name} の水準ごとの「${ev}」の確率`);
+    const s = svgOpen(`${v.name}の水準ごとの「${ev}」の確率`);
     const L = 58, Rm = 16, Tp = 34, B = 46, n = v.levels.length;
     const rs = v.levels.map(l => R.predict(Object.assign({}, vals, { [v.col]: l })));
     const obs = v.counts.map(c => c.events / c.n);
@@ -532,7 +532,7 @@
     const items = [];
     for (const v of R.vars) if (v.orPerSD != null) items.push({ label: `${v.name}（+1σ = ${sig(v.sd, 3)}）`, or: v.orPerSD, ci: v.orPerSDCI, p: v.p });
     for (const c of R.coef) if (c.kind === 'dummy') items.push({ label: c.label + '（対 基準）', or: c.or, ci: c.orCI, p: c.p });
-    const s = svgOpen('オッズ比と信頼区間（1 より右：起きる確率が上がる）');
+    const s = svgOpen('オッズ比と信頼区間（1より右：起きる確率が上がる）');
     if (!items.length) return C.resolveVars(s.join('') + `<text x="${W / 2}" y="${H / 2}" font-size="13" text-anchor="middle" fill="var(--muted)">2乗項・交互作用のある変数はオッズ比が一定でないため表示しません</text></svg>`);
     const lg = v => Math.log10(Math.min(1e6, Math.max(1e-6, v)));
     let lo = Math.min(0, ...items.map(i => lg(i.ci[0]))), hi = Math.max(0, ...items.map(i => lg(i.ci[1])));
@@ -555,7 +555,7 @@
   }
   function rocChart() {
     return C.plot({
-      title: `ROC 曲線（AUC ${fix(R.auc, 3)}）`, xLabel: '1 − 特異度（誤って予測した割合）', yLabel: '感度', x: [0, 1], y: [0, 1.02],
+      title: `ROC曲線（AUC ${fix(R.auc, 3)}）`, xLabel: '1 − 特異度（誤って予測した割合）', yLabel: '感度', x: [0, 1], y: [0, 1.02],
       layers: [{ type: 'line', data: [[0, 0], [1, 1]], color: 'var(--muted)', dash: '5 4', width: 1 }, { type: 'line', data: R.roc.points, color: 'var(--s1)', width: 2.2, label: 'ROC' }],
     });
   }
@@ -563,9 +563,9 @@
   // ---------- Excel 保存 ----------
   function exportXlsx() {
     if (!R) return;
-    const coef = [['項', '係数', '標準誤差', 'z', 'p 値', 'オッズ比', 'オッズ比 下限', 'オッズ比 上限']].concat(R.coef.map(c => [c.label, c.beta, c.se, c.z, c.p, c.kind === 'intercept' ? null : c.or, c.kind === 'intercept' ? null : c.orCI[0], c.kind === 'intercept' ? null : c.orCI[1]]));
-    const vars = [['変数', '自由度', '尤度比 χ²', 'p 値', '1σ あたりのオッズ比', '下限', '上限']].concat(R.vars.map(v => [v.name, v.df, v.lr, v.p, v.orPerSD, v.orPerSDCI ? v.orPerSDCI[0] : null, v.orPerSDCI ? v.orPerSDCI[1] : null]));
-    const fitRows = [['項目', '値'], ['件数', R.n], [`「${R.event}」の件数`, R.events], ['推定方法', R.firth ? 'Firth 法' : '最尤法'], ['尤度比 χ²（全体）', R.lrAll], ['自由度', R.dfAll], ['p 値（全体）', R.pAll], ['McFadden R²', R.mcfadden], ['逸脱度', R.deviance], ['AIC', R.aic], ['AUC', R.auc], ['Hosmer-Lemeshow χ²', R.hl ? R.hl.stat : null], ['Hosmer-Lemeshow p 値', R.hl ? R.hl.p : null]];
+    const coef = [['項', '係数', '標準誤差', 'z', 'p値', 'オッズ比', 'オッズ比 下限', 'オッズ比 上限']].concat(R.coef.map(c => [c.label, c.beta, c.se, c.z, c.p, c.kind === 'intercept' ? null : c.or, c.kind === 'intercept' ? null : c.orCI[0], c.kind === 'intercept' ? null : c.orCI[1]]));
+    const vars = [['変数', '自由度', '尤度比χ²', 'p値', '1σあたりのオッズ比', '下限', '上限']].concat(R.vars.map(v => [v.name, v.df, v.lr, v.p, v.orPerSD, v.orPerSDCI ? v.orPerSDCI[0] : null, v.orPerSDCI ? v.orPerSDCI[1] : null]));
+    const fitRows = [['項目', '値'], ['件数', R.n], [`「${R.event}」の件数`, R.events], ['推定方法', R.firth ? 'Firth法' : '最尤法'], ['尤度比χ²（全体）', R.lrAll], ['自由度', R.dfAll], ['p値（全体）', R.pAll], ['McFadden R²', R.mcfadden], ['逸脱度', R.deviance], ['AIC', R.aic], ['AUC', R.auc], ['Hosmer-Lemeshow χ²', R.hl ? R.hl.stat : null], ['Hosmer-Lemeshow p値', R.hl ? R.hl.p : null]];
     const names = st.cols.map(c => c.name);
     const data = [['行'].concat(names, ['予測確率'])].concat(R.rows.map((i, k) => [i + 1].concat(st.cols.map(c => { const x = num(c.vals[i]); return x != null ? x : c.vals[i]; }), [R.pr[k]])));
     download(X.writeXlsx([{ name: '変数ごと', rows: vars }, { name: '係数', rows: coef }, { name: '当てはまり', rows: fitRows }, { name: 'データと予測', rows: data }]), `${stamp()}_要因解析.xlsx`, XLSX_TYPE);
