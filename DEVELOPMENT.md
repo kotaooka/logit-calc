@@ -24,7 +24,6 @@ tests/                 テスト（下記）
 
 ## 更新して公開するとき
 
-- `index.html`・`js/`・`icons/` を変更したら、**`sw.js` 先頭の `VERSION` を必ず上げてから** push してください。上げないと、すでに使っている人の端末に古いファイルが残り続けます
 - 解説を直すときは `docs/explanation.md` を編集し、`python tools/build.py`（`pip install markdown`）で index.html に埋め込んでください。埋め込み忘れは CI で検出します
 - `js/stats.js`・`js/xlsx.js`・`js/charts.js`・`js/table.js` はほかのツールと共通です。直すときは両方に反映してください
 - GitHub Pages は main ブランチのルートを公開しています

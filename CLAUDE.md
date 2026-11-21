@@ -32,7 +32,7 @@ python tests/make_reference.py && node tests/test.js
 ## 公開ファイルを更新したとき
 - 公開しているファイル（ページ・JS・アイコン・文言）を変えたら `sw.js` の `VERSION` を上げる。上げないと PWA で古い版が残る。
 - 公開に新しいファイルを加えたら `sw.js` の `ASSETS` にも足す。
-- 見た目を変えたら `docs/screenshots/` と `og.png` を撮り直す（手順は `tools/screenshots.py` の先頭）。
+- 見た目を変えたら `docs/screenshots/` を撮り直す（手順は `tools/screenshots.py` の先頭）。`og.png` を作るスクリプトは無いので、作り直しが要りそうなら報告に書く。
 
 ## Issue
 - 作業中に依頼の範囲外の問題・改善点を見つけたら、直さずに Issue に起票して報告する（ラベル：不具合／改善）。本文は `.github/ISSUE_TEMPLATE/` の欄（現象・期待する動き・根拠・完了の条件など）に沿って書く。
